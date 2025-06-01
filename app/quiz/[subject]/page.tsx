@@ -23,6 +23,15 @@ import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { useToast } from "@/hooks/use-toast"
 
+
+interface UserData {
+  id: string | number; // Or whatever unique ID your backend provides
+  email: string;
+  fullName: string;
+  // Add other relevant fields like role, profilePictureUrl, etc.
+}
+
+
 // Mock quiz data - in a real app, this would come from the backend
 const quizData = {
   mathematics: {
@@ -444,19 +453,32 @@ export default function QuizPage() {
   const [timerActive, setTimerActive] = useState(false)
   const [showResults, setShowResults] = useState(false)
   const [score, setScore] = useState(0)
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const [currentUser, setCurrentUser] = useState<UserData | null>(null);
+  
 
   const subject = params.subject as string
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in to access quizzes",
-        variant: "destructive",
-      })
-      router.push("/login")
-    }
-  }, [user, authLoading, router, toast])
+  // Authentication Check and User Data Retrieval
+    useEffect(() => {
+      const storedUser = sessionStorage.getItem('loggedInUser');
+      if (storedUser) {
+        try {
+          const userData: UserData = JSON.parse(storedUser);
+          if (userData && userData.email && userData.fullName) {
+            setCurrentUser(userData);
+          } else {
+            router.push('/login'); // Invalid user data
+          }
+        } catch (error) {
+          console.error("Failed to parse user data from sessionStorage", error);
+          router.push('/login'); // Error parsing, redirect
+        }
+      } else {
+        router.push('/login'); // No user found, redirect
+      }
+      setIsLoadingUser(false);
+    }, [router]);
 
   useEffect(() => {
     if (subject && quizData[subject as keyof typeof quizData]) {

@@ -6,7 +6,6 @@ import SubjectsSection from "@/components/subjects-section"
 import EventsSection from "@/components/events-section"
 import PremiumSection from "@/components/premium-section"
 import FaqSection from "@/components/faq-section"
-
 export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
@@ -17,6 +16,7 @@ export default function HomePage() {
         <EventsSection />
         <PremiumSection />
         <AboutSection />
+        
         <FaqSection />
       </main>
       <Footer />

@@ -23,6 +23,15 @@ export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
+
+  const handleGoogleLogin = () => {
+    // Redirect the entire window to the backend's Google OAuth2 initiation endpoint
+    window.location.href = `${BACKEND_URL}/oauth2/authorization/google?redirect_uri=${encodeURIComponent(window.location.origin + "/dashboard")}`;
+    // The redirect_uri here is optional if you only have one success target
+    // but can be used if your success handler needs to know where to send the user ultimately.
+    // However, the main success redirect is configured on the backend (app.oauth2.successRedirectUri)
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -129,6 +138,14 @@ export default function LoginPage() {
               <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Logging in...</>) : ("Login")}
               </Button>
+              <div className="relative flex justify-center text-xs uppercase"><span className="bg-card px-2 text-muted-foreground">Or continue with</span></div>
+          
+
+
+              <Button variant="outline" className="w-full" onClick={handleGoogleLogin} disabled={isLoading}>
+            <Image src="/google.svg" alt="Google" width={16} height={16} className="mr-2 h-4 w-4" />
+            Sign in with Google
+          </Button>
            </form>
          </CardContent>
          {/* ... CardFooter ... */}
